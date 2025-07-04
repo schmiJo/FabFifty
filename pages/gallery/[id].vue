@@ -31,10 +31,7 @@
                             <p class="text-2xl font-bold text-yellow-400">{{ images.length }}</p>
                             <p class="text-yellow-200">{{ images.length === 1 ? 'Foto' : 'Fotos' }}</p>
                         </div>
-                        <div class="text-center">
-                            <p class="text-2xl font-bold text-green-400">{{ totalSizeMB }}</p>
-                            <p class="text-green-200">MB</p>
-                        </div>
+
                     </div>
                 </div>
             </div>
@@ -126,10 +123,10 @@
 
             <!-- Lightbox Modal -->
             <div v-if="lightboxOpen"
-                class="fixed inset-0 z-50 bg-black/90 backdrop-blur-lg flex items-center justify-center p-4"
+                class="fixed inset-0 z-50 bg-black/90 backdrop-blur-lg flex flex-col items-center justify-center p-4"
                 @click="closeLightbox">
 
-                <div class="relative max-w-7xl max-h-full">
+                <div class="relative flex-1 flex flex-col items-center justify-center max-w-7xl max-h-full">
                     <!-- Close Button -->
                     <button @click="closeLightbox"
                         class="absolute top-4 right-4 z-10 w-12 h-12 bg-black/50 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-black/70 transition-colors">
@@ -147,26 +144,27 @@
                         <i class="fas fa-chevron-right text-xl"></i>
                     </button>
 
-                    <!-- Image -->
-                    <img v-if="currentImage" :src="currentImage.url" :alt="currentImage.fileName"
-                        class="max-w-full max-h-full object-contain rounded-lg" @click.stop>
+                    <!-- Image Container -->
+                    <div class="flex-1 flex items-center justify-center mb-4">
+                        <img v-if="currentImage" :src="currentImage.url" :alt="currentImage.fileName"
+                            class="max-w-full max-h-full object-contain rounded-lg" @click.stop>
+                    </div>
+                </div>
 
-                    <!-- Image Info -->
-                    <div
-                        class="absolute bottom-4 left-4 right-4 bg-black/50 backdrop-blur-sm rounded-xl p-4 text-white">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-lg font-medium">{{ currentImage?.fileName }}</p>
-                                <p class="text-sm text-gray-300">{{ formatDate(currentImage?.lastModified) }}</p>
-                            </div>
-                            <div class="text-right">
-                                <p class="text-sm text-gray-300">{{ currentImageIndex + 1 }} / {{ images.length }}</p>
-                                <a :href="currentImage?.url" target="_blank"
-                                    class="text-yellow-400 hover:text-yellow-300 transition-colors text-sm">
-                                    <i class="fas fa-external-link-alt mr-1"></i>
-                                    Original öffnen
-                                </a>
-                            </div>
+                <!-- Image Info - Now at the bottom of the screen -->
+                <div class="w-full max-w-7xl bg-black/50 backdrop-blur-sm rounded-xl p-4 text-white" @click.stop>
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <!--Bitte hier upvoting knopf und coutner einfügen-->
+                            <p class="text-sm text-gray-300">{{ formatDate(currentImage?.lastModified) }}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-sm text-gray-300">{{ currentImageIndex + 1 }} / {{ images.length }}</p>
+                            <a :href="currentImage?.url" target="_blank"
+                                class="text-yellow-400 hover:text-yellow-300 transition-colors text-sm">
+                                <i class="fas fa-external-link-alt mr-1"></i>
+                                Original öffnen
+                            </a>
                         </div>
                     </div>
                 </div>

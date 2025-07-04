@@ -27,7 +27,7 @@
                 </div>
             </div>
 
-            <!-- Upload-Pfad Information -->
+            <!-- Upload-Pfad Information
             <div
                 class="mb-6 p-4 bg-gradient-to-r from-yellow-400/10 to-yellow-600/5 backdrop-blur-sm rounded-xl border border-yellow-400/30">
                 <div class="text-sm">
@@ -38,7 +38,7 @@
                     <span class="text-yellow-100 ml-2 font-mono">{{ uploadPath }}</span>
                 </div>
             </div>
-
+                -->
             <!-- Photo Uploader Component -->
             <PhotoUploader :concurrency-limit="3" :upload-path="uploadPath" :category-id="categoryId"
                 :category-name="categoryName" @upload-start="onUploadStart" @upload-progress="onUploadProgress"

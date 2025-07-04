@@ -32,7 +32,7 @@
                 <div
                     class="bg-gradient-to-r from-yellow-400/20 to-yellow-600/20 backdrop-blur-sm rounded-2xl p-4 border border-yellow-400/30 shadow-xl">
                     <p class="text-yellow-200 text-lg font-medium mb-2">
-                        🎉 50 Jahre voller Erinnerungen 🎉
+                        🎉 Ein Abend voller Erinnerung 🎉
                     </p>
                     <p class="text-yellow-100 text-sm">
                         Wähle eine Kategorie und teile deine schönsten Momente mit uns
@@ -106,7 +106,7 @@ interface Category {
 const categories: Category[] = [
     {
         id: 'bester-teller-buffet',
-        name: 'Bester Teller Buffet',
+        name: 'Bester Buffet Teller',
         description: 'Die kreativsten und leckersten Buffet-Teller',
         path: 'images/bester-teller-buffet'
     },
@@ -117,33 +117,27 @@ const categories: Category[] = [
         path: 'images/coolster-tanzschritt'
     },
     {
-        id: 'dresscode-nicht-erfuellt',
-        name: 'Dresscode nicht erfüllt',
-        description: 'Humorvolle Outfit-Pannen und Stilbrüche',
-        path: 'images/dresscode-nicht-erfuellt'
-    },
-    {
         id: 'kreativster-schnappschuss',
         name: 'Kreativster Schnappschuss',
-        description: 'Die originellsten und kreativsten Fotos',
+        description: 'Der beste Spontan-Schnappschuss des Abends',
         path: 'images/kreativster-schnappschuss'
     },
     {
-        id: 'lieblingsbild-geburtstagskinder',
-        name: 'Lieblingsbild Geburtstagskinder',
-        description: 'Die schönsten Momente der Jubilare',
-        path: 'images/lieblingsbild-geburtstagskinder'
+        id: 'best-of-geburtstagskinder',
+        name: 'Best of Stefan und Lea',
+        description: 'Bestes Bild von den Geburtstagskindern',
+        path: 'images/best-of-geburtstagskindern'
     },
     {
         id: 'most-impressive-dress',
         name: 'Most Impressive Dress',
-        description: 'Die beeindruckendsten Outfits des Abends',
+        description: 'Dresscode voll erfüllt!!',
         path: 'images/most-impressive-dress'
     },
     {
         id: 'pose-ohne-absicht',
         name: 'Pose ohne Absicht',
-        description: 'Spontane und natürliche Momente',
+        description: 'Die besten Posen ohne es zu merken',
         path: 'images/pose-ohne-absicht'
     },
     {
