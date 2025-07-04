@@ -26,9 +26,9 @@ export default defineNuxtConfig({
 
   // Runtime config (private and public keys)
   runtimeConfig: {
-    // Private (server-only)
-    doSpacesKey: '',
-    doSpacesSecret: '',
+    // Private (server-only) - these will be automatically populated from NUXT_DO_SPACES_KEY and NUXT_DO_SPACES_SECRET
+    doSpacesKey: process.env.NUXT_DO_SPACES_KEY || '',
+    doSpacesSecret: process.env.NUXT_DO_SPACES_SECRET || '',
 
     // Public (client and server)
     public: {
@@ -39,7 +39,10 @@ export default defineNuxtConfig({
 
   // Nitro server options
   nitro: {
-    preset: 'vercel-edge', // optional: for Vercel Edge Functions
+    preset: 'vercel-edge',
+    experimental: {
+      wasm: true
+    }
   },
 
   // Vite config (optional: extend if needed)

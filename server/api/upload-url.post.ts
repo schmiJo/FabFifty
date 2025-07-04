@@ -1,53 +1,52 @@
 import { S3Client } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { PutObjectCommand } from '@aws-sdk/client-s3'
-import { v4 as uuid } from 'uuid'
 
 export default defineEventHandler(async (event) => {
     console.log('📤 Upload URL request received')
 
-    const body = await readBody(event)
-    console.log('📋 Request body:', { fileName: body.fileName, fileType: body.fileType })
-
-    if (!body?.fileName || !body?.fileType) {
-        console.error('❌ Missing fileName or fileType in request body')
-        throw createError({
-            statusCode: 400,
-            statusMessage: 'fileName and fileType are required',
-        })
-    }
-
-    const config = useRuntimeConfig()
-    const { doSpacesKey, doSpacesSecret } = config
-    const spaceName = 'fifty'
-
-    if (!doSpacesKey || !doSpacesSecret) {
-        console.error('❌ Missing DigitalOcean Spaces credentials')
-        throw createError({
-            statusCode: 500,
-            statusMessage: 'Server misconfigured',
-        })
-    }
-
-    const s3Client = new S3Client({
-        endpoint: 'https://fra1.digitaloceanspaces.com',
-        credentials: {
-            accessKeyId: doSpacesKey,
-            secretAccessKey: doSpacesSecret,
-        },
-        region: 'fra1',
-        forcePathStyle: false,
-    })
-
-    const key = `images/${uuid()}-${body.fileName}`
-    console.log('🔑 Generated file key:', key)
-
     try {
+        const body = await readBody(event)
+        console.log('📋 Request body:', { fileName: body?.fileName, fileType: body?.fileType })
+
+        if (!body?.fileName || !body?.fileType) {
+            console.error('❌ Missing fileName or fileType in request body')
+            throw createError({
+                statusCode: 400,
+                statusMessage: 'fileName and fileType are required',
+            })
+        }
+
+        const config = useRuntimeConfig()
+        const { doSpacesKey, doSpacesSecret } = config
+        const spaceName = 'fifty'
+
+        if (!doSpacesKey || !doSpacesSecret) {
+            console.error('❌ Missing DigitalOcean Spaces credentials')
+            throw createError({
+                statusCode: 500,
+                statusMessage: 'Server misconfigured',
+            })
+        }
+
+        const s3Client = new S3Client({
+            endpoint: 'https://fra1.digitaloceanspaces.com',
+            credentials: {
+                accessKeyId: doSpacesKey,
+                secretAccessKey: doSpacesSecret,
+            },
+            region: 'fra1',
+            forcePathStyle: false,
+        })
+
+        const key = `images/${crypto.randomUUID()}-${body.fileName}`
+        console.log('🔑 Generated file key:', key)
+
         const command = new PutObjectCommand({
             Bucket: spaceName,
             Key: key,
             ContentType: body.fileType,
-            ACL: 'public-read', // 👈 Ensure it's part of the signed command
+            ACL: 'public-read',
         })
 
         const url = await getSignedUrl(s3Client, command, {
