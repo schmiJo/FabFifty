@@ -47,7 +47,7 @@ export default defineNuxtConfig({
 
   // Nitro server options
   nitro: {
-    preset: 'vercel-edge',
+    preset: 'node-server',
     experimental: {
       wasm: true
     }
