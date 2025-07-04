@@ -180,7 +180,7 @@ function getCategoryIcon(categoryId: string): string {
 
 function selectCategory(category: Category) {
     selectedCategory.value = category.id
-    navigateTo(`/upload/${category.id}?path=${encodeURIComponent(category.path)}&name=${encodeURIComponent(category.name)}`)
+    navigateTo(`/gallery/${category.id}?path=${encodeURIComponent(category.path)}&name=${encodeURIComponent(category.name)}`)
 }
 
 // Setze die Seitentitel

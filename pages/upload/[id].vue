@@ -14,7 +14,7 @@
                 <button @click="goBack"
                     class="flex items-center text-yellow-300 hover:text-yellow-200 transition-colors mb-6 bg-white/10 backdrop-blur-sm rounded-xl px-4 py-3 border border-white/20 hover:border-yellow-400/50">
                     <i class="fas fa-arrow-left mr-3 text-lg"></i>
-                    <span class="font-medium">Zurück zu den Kategorien</span>
+                    <span class="font-medium">Zurück zur Galerie</span>
                 </button>
 
                 <div
@@ -149,7 +149,7 @@ function onUploadError(error: string) {
 }
 
 function goBack() {
-    navigateTo('/')
+    navigateTo(`/gallery/${categoryId}?path=${encodeURIComponent(uploadPath)}&name=${encodeURIComponent(categoryName)}`)
 }
 
 // Set page title
