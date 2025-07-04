@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
 
     const config = useRuntimeConfig()
     const { doSpacesKey, doSpacesSecret } = config
-    const spaceName = 'fifty' // ⬅️ Static space name
+    const spaceName = 'fifty'
 
     if (!doSpacesKey || !doSpacesSecret) {
         console.error('❌ Missing DigitalOcean Spaces credentials')
@@ -28,12 +28,6 @@ export default defineEventHandler(async (event) => {
             statusMessage: 'Server misconfigured',
         })
     }
-
-    console.log('🔐 Credentials configured:', {
-        keyPresent: !!doSpacesKey,
-        secretPresent: !!doSpacesSecret,
-        spaceName: spaceName
-    })
 
     const s3Client = new S3Client({
         endpoint: 'https://fra1.digitaloceanspaces.com',
@@ -45,48 +39,34 @@ export default defineEventHandler(async (event) => {
         forcePathStyle: false,
     })
 
-    console.log('🔗 S3 client initialized with endpoint: https://fra1.digitaloceanspaces.com')
-
     const key = `images/${uuid()}-${body.fileName}`
     console.log('🔑 Generated file key:', key)
 
     try {
-        console.log('🚀 Starting signed URL generation...')
-        console.log('📝 Parameters:', {
-            endpoint: 'https://fra1.digitaloceanspaces.com',
-            bucket: spaceName,
-            key: key,
-            contentType: body.fileType,
-            expires: 60
-        })
-
         const command = new PutObjectCommand({
-            Bucket: spaceName, // Use the space name as bucket
+            Bucket: spaceName,
             Key: key,
             ContentType: body.fileType,
-            ACL: 'public-read',
+            ACL: 'public-read', // 👈 Ensure it's part of the signed command
         })
 
-        const url = await getSignedUrl(s3Client, command, { expiresIn: 60 })
-
-        console.log('✅ Signed URL generated successfully')
-        console.log('🪣 Space: fifty.fra1.digitaloceanspaces.com')
-        console.log('⏱️ URL expires in 60 seconds')
-        console.log('🔗 Generated URL length:', url.length)
-        console.log('🌐 Generated URL:', url)
-        console.log('📁 File will be accessible at:', `https://fifty.fra1.digitaloceanspaces.com/${key}`)
-
-        // Let's also verify the URL format
-        console.log('🔍 URL Analysis:', {
-            hasSignature: url.includes('X-Amz-Signature'),
-            hasCredential: url.includes('X-Amz-Credential'),
-            hasExpires: url.includes('X-Amz-Expires'),
-            domain: url.split('/')[2],
-            path: url.split('/').slice(3, -1).join('/'),
-            fileName: url.split('/').pop()?.split('?')[0]
+        const url = await getSignedUrl(s3Client, command, {
+            expiresIn: 60,
+            signingRegion: 'fra1',
+            signingService: 's3',
         })
 
-        return { url, key }
+        const publicUrl = `https://${spaceName}.fra1.cdn.digitaloceanspaces.com/${key}`
+
+        return {
+            url,       // Presigned URL to upload with correct headers
+            key,       // Object key
+            publicUrl, // Final public image URL after upload
+            headers: {
+                'x-amz-acl': 'public-read',
+                'Content-Type': body.fileType,
+            },
+        }
     } catch (error) {
         console.error('❌ Failed to generate signed URL:', error)
         throw createError({
@@ -95,4 +75,3 @@ export default defineEventHandler(async (event) => {
         })
     }
 })
-
