@@ -1,26 +1,41 @@
 <template>
-    <div class="min-h-screen bg-gray-50">
-        <div class="p-4 max-w-md mx-auto">
-            <!-- Back Button and Header -->
+    <div class="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 relative overflow-hidden">
+        <!-- Festliche Hintergrund-Animation -->
+        <div class="absolute inset-0 overflow-hidden">
+            <div class="absolute top-10 left-10 w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></div>
+            <div class="absolute top-20 right-20 w-1 h-1 bg-pink-400 rounded-full animate-ping"></div>
+            <div class="absolute bottom-32 left-20 w-3 h-3 bg-yellow-300 rounded-full animate-bounce"></div>
+            <div class="absolute bottom-20 right-10 w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
+        </div>
+
+        <div class="relative z-10 p-6 max-w-md mx-auto">
+            <!-- Zurück-Button und Header -->
             <div class="mb-6">
                 <button @click="goBack"
-                    class="flex items-center text-blue-600 hover:text-blue-700 transition-colors mb-4">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7">
-                        </path>
-                    </svg>
-                    Back to Categories
+                    class="flex items-center text-yellow-300 hover:text-yellow-200 transition-colors mb-6 bg-white/10 backdrop-blur-sm rounded-xl px-4 py-3 border border-white/20 hover:border-yellow-400/50">
+                    <i class="fas fa-arrow-left mr-3 text-lg"></i>
+                    <span class="font-medium">Zurück zu den Kategorien</span>
                 </button>
 
-                <h1 class="text-2xl font-bold text-center text-gray-800">{{ categoryName }}</h1>
-                <p class="text-center text-gray-600 mt-2">Upload your photos for this category</p>
+                <div
+                    class="text-center bg-gradient-to-r from-white/10 to-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/20 shadow-xl mb-6">
+                    <div class="mb-4">
+                        <i :class="getCategoryIcon(categoryId)" class="text-4xl text-yellow-400 mb-3 block"></i>
+                    </div>
+                    <h1 class="text-2xl font-bold text-white mb-3 font-playfair">{{ categoryName }}</h1>
+                    <p class="text-yellow-200 text-sm">Lade deine schönsten Fotos für diese Kategorie hoch</p>
+                </div>
             </div>
 
-            <!-- Upload Path Info -->
-            <div class="mb-6 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+            <!-- Upload-Pfad Information -->
+            <div
+                class="mb-6 p-4 bg-gradient-to-r from-yellow-400/10 to-yellow-600/5 backdrop-blur-sm rounded-xl border border-yellow-400/30">
                 <div class="text-sm">
-                    <span class="font-medium text-blue-800">Upload destination:</span>
-                    <span class="text-blue-600 ml-2">{{ uploadPath }}</span>
+                    <span class="font-medium text-yellow-200">
+                        <i class="fas fa-folder text-yellow-400 mr-2"></i>
+                        Upload-Ziel:
+                    </span>
+                    <span class="text-yellow-100 ml-2 font-mono">{{ uploadPath }}</span>
                 </div>
             </div>
 
@@ -29,25 +44,37 @@
                 :category-name="categoryName" @upload-start="onUploadStart" @upload-progress="onUploadProgress"
                 @upload-complete="onUploadComplete" @upload-error="onUploadError" />
 
-            <!-- Additional Status Information -->
-            <div v-if="totalUploads > 0" class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <h3 class="text-sm font-medium text-blue-800 mb-2">Session Summary</h3>
-                <p class="text-xs text-blue-600">
-                    Total files processed: {{ totalUploads }}
-                </p>
-                <p class="text-xs text-blue-600">
-                    Successfully uploaded: {{ successfulUploads }}
-                </p>
-                <p v-if="totalUploads - successfulUploads > 0" class="text-xs text-red-600">
-                    Failed uploads: {{ totalUploads - successfulUploads }}
-                </p>
+            <!-- Session-Zusammenfassung -->
+            <div v-if="totalUploads > 0"
+                class="mt-6 p-5 bg-gradient-to-r from-green-400/10 to-emerald-600/5 backdrop-blur-sm rounded-xl border border-green-400/30">
+                <h3 class="text-lg font-semibold text-green-200 mb-4 flex items-center">
+                    <i class="fas fa-chart-bar text-green-400 mr-3"></i>
+                    Session-Übersicht
+                </h3>
+                <div class="space-y-2">
+                    <p class="text-sm text-green-100 flex justify-between">
+                        <span>Verarbeitete Dateien:</span>
+                        <span class="font-semibold">{{ totalUploads }}</span>
+                    </p>
+                    <p class="text-sm text-green-100 flex justify-between">
+                        <span>Erfolgreich hochgeladen:</span>
+                        <span class="font-semibold text-green-300">{{ successfulUploads }}</span>
+                    </p>
+                    <p v-if="totalUploads - successfulUploads > 0" class="text-sm text-red-200 flex justify-between">
+                        <span>Fehlgeschlagen:</span>
+                        <span class="font-semibold text-red-300">{{ totalUploads - successfulUploads }}</span>
+                    </p>
+                </div>
             </div>
 
-            <!-- Error Messages -->
-            <div v-if="errors.length > 0" class="mt-4 space-y-2">
+            <!-- Fehlermeldungen -->
+            <div v-if="errors.length > 0" class="mt-4 space-y-3">
                 <div v-for="(error, index) in errors" :key="index"
-                    class="p-3 bg-red-50 border border-red-200 rounded-lg">
-                    <p class="text-xs text-red-800">{{ error }}</p>
+                    class="p-4 bg-gradient-to-r from-red-400/10 to-red-600/5 backdrop-blur-sm rounded-xl border border-red-400/30">
+                    <div class="flex items-start">
+                        <i class="fas fa-exclamation-triangle text-red-400 mr-3 mt-1 flex-shrink-0"></i>
+                        <p class="text-sm text-red-200">{{ error }}</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -84,6 +111,22 @@ const totalUploads = ref(0)
 const successfulUploads = ref(0)
 const errors = ref<string[]>([])
 
+// Funktion für passende Icons zu jeder Kategorie
+function getCategoryIcon(categoryId: string): string {
+    const iconMap: Record<string, string> = {
+        'bester-teller-buffet': 'fas fa-utensils',
+        'coolster-tanzschritt': 'fas fa-music',
+        'dresscode-nicht-erfuellt': 'fas fa-tshirt',
+        'kreativster-schnappschuss': 'fas fa-camera-retro',
+        'lieblingsbild-geburtstagskinder': 'fas fa-heart',
+        'most-impressive-dress': 'fas fa-crown',
+        'pose-ohne-absicht': 'fas fa-laugh',
+        'romantischster-moment': 'fas fa-kiss',
+        'schoenstes-gruppenfoto': 'fas fa-users'
+    }
+    return iconMap[categoryId] || 'fas fa-camera'
+}
+
 // Event handlers
 function onUploadStart(files: File[]) {
     console.log(`📤 Upload started for ${files.length} files`)
@@ -111,6 +154,12 @@ function goBack() {
 
 // Set page title
 useHead({
-    title: `Upload - ${categoryName}`
+    title: `Upload - ${categoryName} | Fab Fifty`
 })
 </script>
+
+<style scoped>
+.font-playfair {
+    font-family: 'Playfair Display', serif;
+}
+</style>

@@ -9,17 +9,21 @@ export default defineNuxtConfig({
   // Set app metadata
   app: {
     head: {
-      title: 'Fab Fifty Photo Uploader',
+      title: '✨ Fab Fifty - 50 Jahre voller Erinnerungen',
       meta: [
         { name: 'viewport', content: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' },
-        { name: 'description', content: 'Upload multiple photos directly to DigitalOcean Spaces' },
-        { name: 'theme-color', content: '#2563eb' },
+        { name: 'description', content: 'Feiere mit uns - Lade deine schönsten Fotos hoch und teile die besten Momente des 50. Geburtstags' },
+        { name: 'theme-color', content: '#FFD700' },
         { name: 'apple-mobile-web-app-capable', content: 'yes' },
         { name: 'apple-mobile-web-app-status-bar-style', content: 'default' }
       ],
       link: [
-        // Optional: add Tailwind CDN or favicon
-        // { rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css' }
+        // Google Fonts für elegante Typografie
+        { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+        { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
+        { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600;700&display=swap' },
+        // Font Awesome für Icons
+        { rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css' }
       ]
     }
   },
@@ -55,5 +59,10 @@ export default defineNuxtConfig({
   // Modules can go here
   modules: [
     '@nuxtjs/tailwindcss'
+  ],
+
+  // Global CSS
+  css: [
+    '~/assets/css/fabfifty.css'
   ]
 })
