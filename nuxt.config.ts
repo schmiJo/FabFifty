@@ -35,13 +35,13 @@ export default defineNuxtConfig({
   // Runtime config (private and public keys)
   runtimeConfig: {
     // Private (server-only) - these will be automatically populated from NUXT_DO_SPACES_KEY and NUXT_DO_SPACES_SECRET
-    doSpacesKey: process.env.NUXT_DO_SPACES_KEY || '',
-    doSpacesSecret: process.env.NUXT_DO_SPACES_SECRET || '',
+    doSpacesKey: process.env.NUXT_DO_SPACES_KEY || process.env.DO_SPACES_KEY || '',
+    doSpacesSecret: process.env.NUXT_DO_SPACES_SECRET || process.env.DO_SPACES_SECRET || '',
 
     // Public (client and server)
     public: {
-      spaceName: 'fifty',
-      region: 'fra1'
+      spaceName: process.env.NUXT_PUBLIC_SPACE_NAME || 'fifty',
+      region: process.env.NUXT_PUBLIC_REGION || 'fra1'
     }
   },
 
@@ -51,6 +51,11 @@ export default defineNuxtConfig({
     experimental: {
       wasm: true
     }
+  },
+
+  // Dev server configuration to listen on all interfaces
+  devServer: {
+    host: '0.0.0.0'
   },
 
   // Vite config for better CSS processing and Android compatibility

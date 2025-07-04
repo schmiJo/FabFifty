@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
 
         const config = useRuntimeConfig()
         const { doSpacesKey, doSpacesSecret } = config
-        const spaceName = 'fifty'
+        const spaceName = config.public.spaceName
 
         if (!doSpacesKey || !doSpacesSecret) {
             console.error('❌ Missing DigitalOcean Spaces credentials')
@@ -30,13 +30,18 @@ export default defineEventHandler(async (event) => {
         }
 
         const s3Client = new S3Client({
-            endpoint: 'https://fra1.digitaloceanspaces.com',
+            endpoint: `https://${config.public.region}.digitaloceanspaces.com`,
             credentials: {
                 accessKeyId: doSpacesKey,
                 secretAccessKey: doSpacesSecret,
             },
-            region: 'fra1',
+            region: config.public.region,
             forcePathStyle: false,
+            // Add additional configuration for better compatibility
+            maxAttempts: 3,
+            requestHandler: {
+                metadata: { handlerProtocol: 'https' }
+            }
         })
 
         const basePath = body.path || 'images'
@@ -52,11 +57,11 @@ export default defineEventHandler(async (event) => {
 
         const url = await getSignedUrl(s3Client, command, {
             expiresIn: 60,
-            signingRegion: 'fra1',
+            signingRegion: config.public.region,
             signingService: 's3',
         })
 
-        const publicUrl = `https://${spaceName}.fra1.cdn.digitaloceanspaces.com/${key}`
+        const publicUrl = `https://${spaceName}.${config.public.region}.cdn.digitaloceanspaces.com/${key}`
 
         return {
             url,       // Presigned URL to upload with correct headers
