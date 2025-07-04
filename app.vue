@@ -1,68 +1,70 @@
 <template>
-  <div class="p-6">
-    <h1 class="text-2xl font-bold mb-4">Fab Fifty Uploader</h1>
-    <input type="file" @change="handleFile" />
-    <p v-if="uploadedUrl" class="mt-4">
-      Uploaded to:
-      <a :href="uploadedUrl" class="underline text-blue-500" target="_blank">{{ uploadedUrl }}</a>
-    </p>
+  <div class="min-h-screen bg-gray-50">
+    <div class="p-4 max-w-md mx-auto">
+      <h1 class="text-2xl font-bold mb-6 text-center text-gray-800">Fab Fifty Photo Uploader</h1>
+
+      <!-- Photo Uploader Component -->
+      <PhotoUploader :concurrency-limit="3" @upload-start="onUploadStart" @upload-progress="onUploadProgress"
+        @upload-complete="onUploadComplete" @upload-error="onUploadError" />
+
+      <!-- Additional Status Information -->
+      <div v-if="totalUploads > 0" class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+        <h3 class="text-sm font-medium text-blue-800 mb-2">Session Summary</h3>
+        <p class="text-xs text-blue-600">
+          Total files processed: {{ totalUploads }}
+        </p>
+        <p class="text-xs text-blue-600">
+          Successfully uploaded: {{ successfulUploads }}
+        </p>
+        <p v-if="totalUploads - successfulUploads > 0" class="text-xs text-red-600">
+          Failed uploads: {{ totalUploads - successfulUploads }}
+        </p>
+      </div>
+
+      <!-- Error Messages -->
+      <div v-if="errors.length > 0" class="mt-4 space-y-2">
+        <div v-for="(error, index) in errors" :key="index" class="p-3 bg-red-50 border border-red-200 rounded-lg">
+          <p class="text-xs text-red-800">{{ error }}</p>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
-<script setup lang="ts">const uploadedUrl = ref('')
-
-async function handleFile(event: Event) {
-  const input = event.target as HTMLInputElement
-  const file = input.files?.[0]
-  if (!file) return
-
-  console.log('🔄 Starting upload for file:', file.name)
-
-  // Step 1: Get the presigned URL from the backend
-  const res = await $fetch('/api/upload-url', {
-    method: 'POST',
-    body: {
-      fileName: file.name,
-      fileType: file.type,
-    }
-  })
-
-  console.log('📋 Got signed URL response:', res)
-
-  // Step 2: Upload the file using the signed URL with required headers
-  const uploadResponse = await fetch(res.url, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': file.type,
-      'x-amz-acl': 'public-read'  // 🔑 Required for public access
-    },
-    body: file
-  })
-
-  console.log('📤 Upload response status:', uploadResponse.status)
-  console.log('📤 Upload response headers:', Object.fromEntries(uploadResponse.headers.entries()))
-
-  if (uploadResponse.ok) {
-    console.log('✅ Upload successful!')
-    console.log('🔗 File should be available at:', res.publicUrl)
-
-    // Optional: test if it's publicly accessible
-    setTimeout(async () => {
-      try {
-        const testResponse = await fetch(res.publicUrl, { method: 'HEAD' })
-        console.log('🧪 File accessibility test:', testResponse.status === 200 ? '✅ ACCESSIBLE' : '❌ NOT ACCESSIBLE')
-        console.log('🧪 Test response status:', testResponse.status)
-      } catch (error) {
-        console.error('🧪 File accessibility test failed:', error)
-      }
-    }, 2000)
-
-    uploadedUrl.value = res.publicUrl
-  } else {
-    const errorText = await uploadResponse.text()
-    console.error('❌ Upload failed with status:', uploadResponse.status)
-    console.error('❌ Error response:', errorText)
-  }
+<script setup lang="ts">
+interface Upload {
+  id: string
+  fileName: string
+  file: File
+  progress: number
+  status: 'waiting' | 'uploading' | 'completed' | 'error'
+  publicUrl?: string
+  error?: string
 }
 
+// State for tracking uploads across sessions
+const totalUploads = ref(0)
+const successfulUploads = ref(0)
+const errors = ref<string[]>([])
+
+// Event handlers
+function onUploadStart(files: File[]) {
+  console.log(`� Upload started for ${files.length} files`)
+  totalUploads.value += files.length
+}
+
+function onUploadProgress(completedCount: number, totalCount: number) {
+  console.log(`� Upload progress: ${completedCount}/${totalCount}`)
+}
+
+function onUploadComplete(uploads: Upload[]) {
+  const newSuccessfulUploads = uploads.filter(upload => upload.status === 'completed').length
+  successfulUploads.value += newSuccessfulUploads
+  console.log(`✅ Upload batch completed: ${newSuccessfulUploads} successful uploads`)
+}
+
+function onUploadError(error: string) {
+  errors.value.push(error)
+  console.error(`❌ Upload error: ${error}`)
+}
 </script>

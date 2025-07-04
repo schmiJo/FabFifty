@@ -9,10 +9,13 @@ export default defineNuxtConfig({
   // Set app metadata
   app: {
     head: {
-      title: 'Fab Fifty Uploader',
+      title: 'Fab Fifty Photo Uploader',
       meta: [
-        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { name: 'description', content: 'Upload files directly to DigitalOcean Spaces' }
+        { name: 'viewport', content: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' },
+        { name: 'description', content: 'Upload multiple photos directly to DigitalOcean Spaces' },
+        { name: 'theme-color', content: '#2563eb' },
+        { name: 'apple-mobile-web-app-capable', content: 'yes' },
+        { name: 'apple-mobile-web-app-status-bar-style', content: 'default' }
       ],
       link: [
         // Optional: add Tailwind CDN or favicon
@@ -48,6 +51,6 @@ export default defineNuxtConfig({
 
   // Modules can go here
   modules: [
-    // Example: '@nuxtjs/tailwindcss', '@nuxt/image', etc.
+    '@nuxtjs/tailwindcss'
   ]
 })
