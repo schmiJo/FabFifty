@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
 
     try {
         const body = await readBody(event)
-        console.log('📋 Request body:', { fileName: body?.fileName, fileType: body?.fileType })
+        console.log('📋 Request body:', { fileName: body?.fileName, fileType: body?.fileType, path: body?.path })
 
         if (!body?.fileName || !body?.fileType) {
             console.error('❌ Missing fileName or fileType in request body')
@@ -39,7 +39,8 @@ export default defineEventHandler(async (event) => {
             forcePathStyle: false,
         })
 
-        const key = `images/${crypto.randomUUID()}-${body.fileName}`
+        const basePath = body.path || 'images'
+        const key = `${basePath}/${crypto.randomUUID()}-${body.fileName}`
         console.log('🔑 Generated file key:', key)
 
         const command = new PutObjectCommand({

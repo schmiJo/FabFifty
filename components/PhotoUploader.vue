@@ -1,5 +1,20 @@
 <template>
     <div>
+        <!-- Category Info (if provided) -->
+        <div v-if="categoryName"
+            class="mb-4 p-3 bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="font-medium text-blue-800">{{ categoryName }}</h3>
+                    <p class="text-sm text-blue-600">{{ uploadPath }}</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-xs text-blue-500">Category ID:</p>
+                    <p class="text-xs font-mono text-blue-600">{{ categoryId }}</p>
+                </div>
+            </div>
+        </div>
+
         <!-- File Input -->
         <div class="mb-6">
             <label class="block w-full">
@@ -102,10 +117,14 @@ interface Upload {
 // Props
 interface Props {
     concurrencyLimit?: number
+    uploadPath?: string
+    categoryId?: string
+    categoryName?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
-    concurrencyLimit: 3
+    concurrencyLimit: 3,
+    uploadPath: 'images'
 })
 
 // Emits
@@ -155,6 +174,8 @@ async function handleFiles(event: Event) {
     if (files.length === 0) return
 
     console.log(`🔄 Starting upload for ${files.length} files`)
+    console.log(`📁 Upload path: ${props.uploadPath}`)
+    console.log(`🏷️ Category: ${props.categoryName} (${props.categoryId})`)
 
     // Emit upload start event
     emit('uploadStart', files)
@@ -202,6 +223,7 @@ async function uploadFile(uploadObj: Upload) {
             body: {
                 fileName: uploadObj.fileName,
                 fileType: uploadObj.file.type,
+                path: props.uploadPath
             }
         })
 
