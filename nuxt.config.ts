@@ -11,11 +11,15 @@ export default defineNuxtConfig({
     head: {
       title: '✨ Fab Fifty - 50 Jahre voller Erinnerungen',
       meta: [
-        { name: 'viewport', content: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no' },
         { name: 'description', content: 'Feiere mit uns - Lade deine schönsten Fotos hoch und teile die besten Momente des 50. Geburtstags' },
         { name: 'theme-color', content: '#FFD700' },
         { name: 'apple-mobile-web-app-capable', content: 'yes' },
-        { name: 'apple-mobile-web-app-status-bar-style', content: 'default' }
+        { name: 'apple-mobile-web-app-status-bar-style', content: 'default' },
+        { name: 'mobile-web-app-capable', content: 'yes' },
+        { name: 'format-detection', content: 'telephone=no' },
+        { name: 'msapplication-tap-highlight', content: 'no' },
+        { 'http-equiv': 'X-UA-Compatible', content: 'IE=edge' }
       ],
       link: [
         // Google Fonts für elegante Typografie
@@ -49,10 +53,13 @@ export default defineNuxtConfig({
     }
   },
 
-  // Vite config (optional: extend if needed)
+  // Vite config for better CSS processing and Android compatibility
   vite: {
     define: {
       'process.env.DEBUG': false
+    },
+    optimizeDeps: {
+      include: ['vue', 'vue-router']
     }
   },
 

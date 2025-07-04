@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no">
+    <title>Android CSS Test</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .test-card {
+            background: rgba(255, 255, 255, 0.1);
+            /* Fallback for browsers that don't support backdrop-filter */
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.2));
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        /* Android fallback */
+        @supports not (backdrop-filter: blur(10px)) {
+            .test-card {
+                background: rgba(255, 255, 255, 0.2);
+                border: 1px solid rgba(255, 255, 255, 0.3);
+            }
+        }
+
+        .test-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .animation-test {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 0.7;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <h1 style="color: white; text-align: center;">Android CSS Compatibility Test</h1>
+
+    <div class="test-card">
+        <h2>Backdrop Filter Test</h2>
+        <p>This card should have a blurred background effect. If you can't see the blur, the fallback solid background
+            should be visible.</p>
+    </div>
+
+    <div class="test-card animation-test">
+        <h2>Animation Test</h2>
+        <p>This card should pulse (fade in/out animation).</p>
+    </div>
+
+    <div class="test-card">
+        <h2>Hover/Touch Test</h2>
+        <p>This card should lift up when you hover or touch it.</p>
+    </div>
+
+    <script>
+        // Test if backdrop-filter is supported
+        document.addEventListener('DOMContentLoaded', function () {
+            const testDiv = document.createElement('div');
+            testDiv.style.backdropFilter = 'blur(1px)';
+            const supportsBackdropFilter = testDiv.style.backdropFilter !== '';
+
+            document.body.insertAdjacentHTML('beforeend',
+                '<div class="test-card"><h2>Browser Support</h2><p>Backdrop Filter: ' +
+                (supportsBackdropFilter ? 'Supported ✅' : 'Not Supported ❌') +
+                '</p></div>');
+        });
+    </script>
+</body>
+
+</html>
